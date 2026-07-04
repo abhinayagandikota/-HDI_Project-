@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDI Prediction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Human Development Index (HDI) Prediction</h1>
+            <p>Enter the indicators below to predict a country's HDI category</p>
+        </header>
+
+        <main>
+            <div class="form-section">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="life_expectancy">Life Expectancy (years)</label>
+                        <input type="number" step="0.1" name="life_expectancy" id="life_expectancy"
+                               min="20" max="90" placeholder="e.g. 78.5"
+                               value="{{ input.life_expectancy or '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mean_schooling_years">Mean Years of Schooling</label>
+                        <input type="number" step="0.1" name="mean_schooling_years" id="mean_schooling_years"
+                               min="0" max="20" placeholder="e.g. 12.3"
+                               value="{{ input.mean_schooling_years or '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expected_schooling_years">Expected Years of Schooling</label>
+                        <input type="number" step="0.1" name="expected_schooling_years" id="expected_schooling_years"
+                               min="0" max="25" placeholder="e.g. 16.2"
+                               value="{{ input.expected_schooling_years or '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gni_per_capita">GNI per Capita (USD)</label>
+                        <input type="number" step="1" name="gni_per_capita" id="gni_per_capita"
+                               min="100" max="150000" placeholder="e.g. 45000"
+                               value="{{ input.gni_per_capita or '' }}" required>
+                    </div>
+
+                    <button type="submit">Predict HDI Category</button>
+                </form>
+            </div>
+
+            <div class="result-section">
+                {% if prediction %}
+                    <div class="result-card">
+                        <h2>Predicted HDI Category</h2>
+                        <p class="prediction-value">{{ prediction }}</p>
+                        <div class="hdi-scale">
+                            <div class="hdi-bar">
+                                <div class="hdi-segment low">Low</div>
+                                <div class="hdi-segment medium">Medium</div>
+                                <div class="hdi-segment high">High</div>
+                                <div class="hdi-segment very-high">Very High</div>
+                            </div>
+                            <div class="hdi-indicator" style="left: {% if prediction == 'Low' %}12%{% elif prediction == 'Medium' %}37%{% elif prediction == 'High' %}62%{% else %}87%{% endif %};">
+                                &#9660;
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="placeholder">
+                        <p>Enter values and click Predict to see the result</p>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+
+        <section class="viz-section">
+            <h2>Exploratory Data Analysis</h2>
+            <div class="viz-grid">
+                <div class="viz-item">
+                    <img src="{{ url_for('static', filename='viz/correlation_heatmap.png') }}" alt="Correlation Heatmap">
+                    <p>Correlation Heatmap</p>
+                </div>
+                <div class="viz-item">
+                    <img src="{{ url_for('static', filename='viz/feature_importance.png') }}" alt="Feature Importance">
+                    <p>Feature Importance</p>
+                </div>
+                <div class="viz-item">
+                    <img src="{{ url_for('static', filename='viz/cm_random_forest.png') }}" alt="Confusion Matrix">
+                    <p>Confusion Matrix (Random Forest)</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>HDI Prediction System &mdash; Built with Flask, scikit-learn, and love for data science</p>
+        </footer>
+    </div>
+</body>
+</html>
